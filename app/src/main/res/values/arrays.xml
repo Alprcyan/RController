@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Support data type list-->
+    <string-array name="topic_types">
+        <item>Std_msgsString</item>
+        <item>Geometry_msgsTwist</item>
+    </string-array>
+    <!--Categories-->
+    <string-array name="topic_categories">
+        <item>Publisher</item>
+        <item>Subscriber</item>
+    </string-array>
+</resources>

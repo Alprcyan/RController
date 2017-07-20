@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:background="@color/colorPrimaryLight"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:textAlignment="center">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_small">
+
+        <TextView
+            android:id="@+id/topic_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/font_normal_size"/>
+
+        <TextView
+            android:id="@+id/topic_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextHint"
+            android:textSize="@dimen/font_normal_size_small"/>
+    </LinearLayout>
+
+    <!--Publisher-->
+    <LinearLayout
+        android:id="@+id/publisher_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDarkReal"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/input_arguments_edit_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/arguments"
+                    android:selectAllOnFocus="true"
+                    android:maxLines="1"
+                    android:inputType="text"/>
+
+                <Button
+                    android:id="@+id/publish_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:padding="@dimen/padding_half_small"
+                    android:text="@string/send_button"
+                    android:textColor="@color/white"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/hz_edit_text"
+                    android:layout_width="@dimen/hz_edit_text_width"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hz_edit_text_hint"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:imeOptions="actionNext"/>
+
+                <EditText
+                    android:id="@+id/millisecond_edit_text"
+                    android:layout_width="@dimen/hz_edit_text_width"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/publish_times_edit_text_hint"
+                    android:inputType="number"
+                    android:maxLines="1"/>
+
+                <TextView
+                    android:id="@+id/send_status_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorAccent"/>
+
+                <Button
+                    android:id="@+id/shutdown_publisher_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:enabled="false"
+                    android:padding="@dimen/padding_half_small"
+                    android:text="@string/shutdown_button_text"
+                    />
+                <!--android:textColor="@color/white"-->
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--Subscriber-->
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/subscriber_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="256dp"
+        android:background="@color/colorPrimaryDarkReal"
+        android:visibility="gone">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center|top"
+            android:scrollbars="vertical">
+
+            <TextView
+                android:id="@+id/subscribe_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:fontFamily="monospace"
+                android:minHeight="256dp"
+                android:padding="@dimen/padding_half_small"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_terminal_size_small"/>
+            <!--android:textIsSelectable="true"-->
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <Button
+            android:id="@+id/start_shutdown_subscriber_button"
+            android:layout_width="@dimen/shutdown_button_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:background="@android:color/transparent"
+            android:textColor="@color/white"/>
+
+        <Button
+            android:id="@+id/focus_button"
+            android:layout_width="@dimen/shutdown_button_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:background="@android:color/transparent"
+            android:text="@string/focus_button_text"
+            android:textColor="@color/white"/>
+    </FrameLayout>
+</LinearLayout>

@@ -1,0 +1,70 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '26.0.0'
+    defaultConfig {
+        applicationId "moe.alprc.rcontroller"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+    productFlavors {
+    }
+}
+
+repositories {
+    maven {
+        url 'https://github.com/rosjava/rosjava_mvn_repo/raw/master'
+    }
+    maven {
+        url 'https://mvnrepository.com/artifact/javax.xml/jaxp-api'
+    }
+    maven {
+        url 'https://mvnrepository.com/artifact/com.google.code.gson/gson'
+    }
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+    compile 'com.google.code.findbugs:jsr305:2.0.1'
+    compile 'org.ros.rosjava_messages:geometry_msgs:[1.12,1.13)'
+    compile('org.ros.android_core:android_15:[0.3,0.4)') {
+        exclude group: 'junit'
+        exclude group: 'xml-apis'
+    }
+    compile('org.ros.rosjava_core:rosjava:0.3.4') {
+        exclude group: 'junit'
+        exclude group: 'xml-apis'
+    }
+    compile 'com.android.support:cardview-v7:26.+'
+    compile 'com.android.support:recyclerview-v7:26.+'
+    compile 'com.android.support:design:26.+'
+    compile 'com.google.code.gson:gson:2.8+'
+}

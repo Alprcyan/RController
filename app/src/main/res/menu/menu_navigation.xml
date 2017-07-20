@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_menu_add_topic"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/add_topic"/>
+    <item
+        android:id="@+id/navigation_reset_topic_list"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/reset_topic_list" />
+</menu>

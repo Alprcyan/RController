@@ -1,14 +1,9 @@
 package moe.alprc.rcontroller;
 
-import moe.alprc.rcontroller.Log;
-
-import java.util.regex.Pattern;
-
 /**
- * Created by alprc on 14/07/2017.
  * It's necessary to update values/arrays.xml as well
  * And, consider adding new Publisher and Subscriber for the new type.
- *
+ * <p>
  * Make sure all names here are same to that in arrays.xml.
  */
 

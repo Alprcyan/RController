@@ -3,17 +3,14 @@ package moe.alprc.rcontroller.publisher;
 import moe.alprc.rcontroller.Log;
 import moe.alprc.rcontroller.Topic;
 
-/**
- * Created by alprc on 17/07/2017.
- */
-
 public class PublisherNodeGenerator {
     private static final String TAG = PublisherNodeGenerator.class.getSimpleName();
 
-    private static final String path = "moe.alprc.rcontroller.publisher.";
+    private static final String PATH = "moe.alprc.rcontroller.publisher.";
 
+    @SuppressWarnings("unchecked")
     public static PublisherNode newInstance(Topic topic) {
-        String className = path + topic.getTopicType() + topic.getTopicCategory();
+        String className = PATH + topic.getTopicType() + topic.getTopicCategory();
         Log.i(TAG, "Attempting to construct: " + className);
         try {
             Class<? extends PublisherNode> c =
@@ -23,9 +20,9 @@ public class PublisherNodeGenerator {
             node.setTopicName(topic.getTopicName());
             return node;
         } catch (ClassNotFoundException e) {
-            Log.e(TAG, e.toString());
+            Log.e(TAG, Log.getStackTraceString(e));
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            Log.e(TAG, Log.getStackTraceString(e));
         }
         return null;
     }

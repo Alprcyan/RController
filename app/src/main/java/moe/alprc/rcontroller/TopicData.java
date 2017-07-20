@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import moe.alprc.rcontroller.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,9 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +29,8 @@ class TopicData {
 
     final static String PUB = "Publisher";
     final static String SUB = "Subscriber";
+    final static String SRV = "Server";
+    final static String CLI = "Client";
 
     // Default topics
     final static String SPRFORNLP = "/sprfornlp";
@@ -46,8 +45,6 @@ class TopicData {
     private ArrayList<Topic> topicList = null;
 
     private final static String FILENAME = "topics.txt";
-    private InputStream IIS;
-    private OutputStream IOS;
     private File externalTopicFile;
 
 
@@ -60,34 +57,34 @@ class TopicData {
     private ArrayList<Topic> loadTopicListInternal() {
         ArrayList<Topic> loadList = null;
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(activity.openFileInput(FILENAME)))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.length() > 2) {
-                        String[] topic = line.split(" ");
-                        if (topic.length == 3) {
-                            if (loadList == null) {
-                                loadList = new ArrayList<>();
-                            }
-                            Log.i(TAG, "Read topic " + topic[TOPIC_NAME]);
-                            loadList.add(new Topic(topic[TOPIC_NAME], topic[TOPIC_TYPE], topic[TOPIC_CATEGORY]));
-                        } else {
-                            StringBuilder sb = new StringBuilder("Wrong topic: ");
-                            for (String s : topic) {
-                                sb.append(s);
-                                sb.append(", ");
-                            }
-                            Log.w(TAG, sb.toString());
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(activity.openFileInput(FILENAME)))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.length() > 2) {
+                    String[] topic = line.split(" ");
+                    if (topic.length == 3) {
+                        if (loadList == null) {
+                            loadList = new ArrayList<>();
                         }
+                        Log.i(TAG, "Read topic " + topic[TOPIC_NAME]);
+                        loadList.add(new Topic(topic[TOPIC_NAME], topic[TOPIC_TYPE], topic[TOPIC_CATEGORY]));
+                    } else {
+                        StringBuilder sb = new StringBuilder("Wrong topic: ");
+                        for (String s : topic) {
+                            sb.append(s);
+                            sb.append(", ");
+                        }
+                        Log.w(TAG, sb.toString());
                     }
                 }
-            } catch (IOException e) {
-                loadList = null;
-            } finally {
-                if (loadList == null || loadList.size() == 0) {
-                    loadList = defaultTopicList;
-                }
             }
+        } catch (IOException e) {
+            loadList = null;
+        } finally {
+            if (loadList == null || loadList.size() == 0) {
+                loadList = defaultTopicList;
+            }
+        }
 
         return loadList;
     }
@@ -130,6 +127,8 @@ class TopicData {
         return loadList;
     }
 
+    // load topic list from internal file, then the external file.
+    // in case of the user denied the permission request.
     private void loadTopicList() {
         topicList = loadTopicListInternal();
         ArrayList<Topic> externalList = loadTopicListExternal();
@@ -217,12 +216,12 @@ class TopicData {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     1);
         } else {
-            File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ File.separator +
+            File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator +
                     activity.getResources().getString(R.string.app_name));
             Log.i(TAG, "Given external root is " + root.getAbsolutePath());
 
             if (root.exists() || root.mkdirs()) {
-                File topicFile = new File( root  + File.separator + FILENAME);
+                File topicFile = new File(root + File.separator + FILENAME);
                 try {
                     if (topicFile.exists() || topicFile.createNewFile()) {
                         Log.i(TAG, topicFile.getAbsolutePath());

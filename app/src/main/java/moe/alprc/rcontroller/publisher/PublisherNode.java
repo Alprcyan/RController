@@ -23,7 +23,5 @@ public interface PublisherNode extends NodeMain {
 
     void setCallback(@Nullable OnShutdownCallback callback);
 
-    @Nullable CancellableLoop getCancellableLoop();
-
     void cancel();
 }

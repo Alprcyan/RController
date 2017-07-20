@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import moe.alprc.rcontroller.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -19,9 +18,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IllegalFormatException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,9 +33,10 @@ class Validator {
 
     private static final String ACCEPT_FILENAME = "accept.txt";
     private static final String SUB_FILENAME = "sub.json";
-    private HashSet<String> accept;
+    private Set<String> accept;
     private Map<String, String> sub;
     private Set<String> subKeySet;
+    private int maxLength = 0;
 
     private Activity activity;
 
@@ -46,6 +49,7 @@ class Validator {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private boolean init(boolean firstCall) {
         InputStream accept_is;
         InputStream sub_is;
@@ -96,6 +100,9 @@ class Validator {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
             subKeySet = sub.keySet();
+            for (String key : subKeySet) {
+                maxLength = Math.max(maxLength, key.split(" ").length);
+            }
         } catch (IOException e) {
             Log.e(TAG, Log.getStackTraceString(e));
             return false;
@@ -159,31 +166,30 @@ class Validator {
         }
     }
 
-    private String[] replace(String[] array, final String[] subArray, String replaceText) {
-        for (int i = 0; i < array.length - subArray.length + 1; ++i) {
-            if (array[i] != null && array[i].equals(subArray[0])) {
-                boolean equal = true;
-                for (int j = 1; j < subArray.length; ++j) {
-                    if (!array[i + j].equals(subArray[j])) {
-                        equal = false;
+    private List<String> replace(List<String> list, final List<String> subList, String replaceText) {
+        for (int i = 0; i < list.size() - subList.size() + 1; ++i) {
+            if (list.get(i).equals(subList.get(0))) {
+                boolean equals = true;
+                for (int ii = 0; ii < subList.size(); ++ii) {
+                    if (!list.get(i + ii).equals(subList.get(ii))) {
+                        equals = false;
                         break;
                     }
                 }
-                if (equal) {
-                    array[i] = replaceText;
-                    for (int j = 1; j < subArray.length; j++) {
-                        array[i + j] = null;
+                if (equals) {
+                    list.set(i, replaceText);
+                    for (int ii = 1; ii < subList.size(); ++ii) {
+                        list.remove(i + 1);
                     }
-                    i += subArray.length - 1;
                 }
             }
         }
-        return array;
+        return list;
     }
 
-    private String arrayToString(String[] array) {
+    private String listToString(List<String> list) {
         StringBuilder builder = new StringBuilder();
-        for (String str : array) {
+        for (String str : list) {
             if (str != null) {
                 builder.append(str).append(" ");
             }
@@ -195,11 +201,21 @@ class Validator {
     }
 
     private String format(String arg) {
-        for (String key : subKeySet) {
-            if (arg.contains(key)) {
-                arg = arrayToString(replace(arg.split(" "), key.split(" "), sub.get(key)));
+        List<String> list = new LinkedList<>(Arrays.asList(arg.split(" ")));
+        Log.i(TAG, "Max length = " + maxLength);
+        for (int o = 2; o <= maxLength; ++o) {
+            for (int i = 0; i < list.size() - o + 1; ++i) {
+                List<String> subStrList = new LinkedList<>();
+                for (int ii = 0; ii < o; ++ii) {
+                    subStrList.add(list.get(i + ii));
+                }
+                String subStr = listToString(subStrList);
+                if (subKeySet.contains(subStr)) {
+                    list = replace(list, subStrList, sub.get(subStr));
+                }
             }
         }
+        arg = listToString(list);
         return arg;
     }
 

@@ -19,7 +19,6 @@ class Std_msgsStringPublisher extends AbstractNodeMain implements PublisherNode 
     private int waitTime;
     private int times;
     private OnShutdownCallback callback;
-    private CancellableLoop cancellableLoop = null;
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -53,12 +52,6 @@ class Std_msgsStringPublisher extends AbstractNodeMain implements PublisherNode 
         this.callback = callback;
     }
 
-    @Override
-    @Nullable
-    public CancellableLoop getCancellableLoop() {
-        return cancellableLoop;
-    }
-
     private long stopValue;
 
     @Override
@@ -81,7 +74,7 @@ class Std_msgsStringPublisher extends AbstractNodeMain implements PublisherNode 
                     stopValue = 0L;
                 }
 
-                cancellableLoop = new CancellableLoop() {
+                CancellableLoop cancellableLoop = new CancellableLoop() {
                     @Override
                     protected void loop() throws InterruptedException {
                         std_msgs.String string = publisher.newMessage();
@@ -112,9 +105,7 @@ class Std_msgsStringPublisher extends AbstractNodeMain implements PublisherNode 
     @Override
     public void onShutdown(Node node) {
         super.onShutdown(node);
-        if (cancellableLoop != null) {
-            cancellableLoop.cancel();
-        }
+        cancel();
         if (callback != null) {
             callback.call();
         }
@@ -123,6 +114,6 @@ class Std_msgsStringPublisher extends AbstractNodeMain implements PublisherNode 
 
     @Override
     public void cancel() {
-        stopValue = times - 1;
+        stopValue = Long.MAX_VALUE;
     }
 }

@@ -24,7 +24,6 @@ class Geometry_msgsTwistPublisher extends AbstractNodeMain implements PublisherN
     private int times;
     private int waitTime;
     private OnShutdownCallback callback;
-    private CancellableLoop cancellableLoop;
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -37,7 +36,6 @@ class Geometry_msgsTwistPublisher extends AbstractNodeMain implements PublisherN
 
         if (args.length != 6) {
             Log.e(TAG, "Wrong arguments");
-            args = null;
         } else {
             this.args = new double[]{
                     Double.parseDouble(args[0]),
@@ -72,12 +70,6 @@ class Geometry_msgsTwistPublisher extends AbstractNodeMain implements PublisherN
         this.callback = callback;
     }
 
-    @Override
-    @Nullable
-    public CancellableLoop getCancellableLoop() {
-        return cancellableLoop;
-    }
-
     private long stopValue;
 
     @Override
@@ -110,7 +102,7 @@ class Geometry_msgsTwistPublisher extends AbstractNodeMain implements PublisherN
                     stopValue = 0L;
                 }
 
-                cancellableLoop = new CancellableLoop() {
+                CancellableLoop cancellableLoop = new CancellableLoop() {
                     @Override
                     protected void loop() throws InterruptedException {
                         geometry_msgs.Twist twist = publisher.newMessage();
@@ -151,9 +143,7 @@ class Geometry_msgsTwistPublisher extends AbstractNodeMain implements PublisherN
     @Override
     public void onShutdown(Node node) {
         super.onShutdown(node);
-        if (cancellableLoop != null) {
-            cancellableLoop.cancel();
-        }
+        cancel();
         if (callback != null) {
             callback.call();
         }
@@ -162,6 +152,6 @@ class Geometry_msgsTwistPublisher extends AbstractNodeMain implements PublisherN
 
     @Override
     public void cancel() {
-        stopValue = times - 1;
+        stopValue = Long.MAX_VALUE;
     }
 }

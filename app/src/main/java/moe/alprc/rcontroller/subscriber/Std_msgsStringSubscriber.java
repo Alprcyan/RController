@@ -1,7 +1,6 @@
 package moe.alprc.rcontroller.subscriber;
 
 import android.support.annotation.Nullable;
-import moe.alprc.rcontroller.Log;
 
 import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
@@ -9,6 +8,8 @@ import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.Node;
 import org.ros.node.topic.Subscriber;
+
+import moe.alprc.rcontroller.Log;
 
 class Std_msgsStringSubscriber extends AbstractNodeMain implements SubscriberNode {
     private String TAG;
@@ -27,6 +28,7 @@ class Std_msgsStringSubscriber extends AbstractNodeMain implements SubscriberNod
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void setCallback(@Nullable OnReceiveCallback callback) {
         this.callback = (OnReceiveCallback<std_msgs.String>) callback;
     }

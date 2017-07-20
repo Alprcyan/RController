@@ -3,15 +3,12 @@ package moe.alprc.rcontroller.subscriber;
 import moe.alprc.rcontroller.Log;
 import moe.alprc.rcontroller.Topic;
 
-/**
- * Created by alprc on 17/07/2017.
- */
-
 public class SubscriberNodeGenerator {
     private static final String TAG = SubscriberNodeGenerator.class.getSimpleName();
 
     private static final String PATH = "moe.alprc.rcontroller.subscriber.";
 
+    @SuppressWarnings("unchecked")
     public static SubscriberNode newInstance(Topic topic, OnReceiveCallback callback) {
         try {
             Class<? extends SubscriberNode> c =

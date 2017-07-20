@@ -13,7 +13,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import moe.alprc.rcontroller.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -154,15 +153,15 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        drawerLayout = findViewById(R.id.drawer_layout);
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         Button button = navigationView.findViewById(R.id.select_master_button);
@@ -177,16 +176,16 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
 
         // Load topic List before construct the listView.
         topicData = new TopicData(this);
-        validator= new Validator(this);
+        validator = new Validator(this);
 
         // Generate the list.
-        listView = (ListView) findViewById(R.id.list_view_main);
+        listView = findViewById(R.id.list_view_main);
         listView.setAdapter(new MyAdapter(this));
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
-                TextView nameTextView = (TextView) v.findViewById(R.id.topic_name);
-                TextView categoryTextView = (TextView) v.findViewById(R.id.topic_category);
+                TextView nameTextView = v.findViewById(R.id.topic_name);
+                TextView categoryTextView = v.findViewById(R.id.topic_category);
                 if (nameTextView == null || categoryTextView == null) {
                     v.setLongClickable(false);
                     return false;
@@ -310,7 +309,7 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
             Toast.makeText(MainActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -369,7 +368,7 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
 
             // read a topic from the TopicData class.
             final Topic topic = topicData.getTopicList().get(position);
-            TextView nameText = ((TextView) convertView.findViewById(R.id.topic_name));
+            TextView nameText = convertView.findViewById(R.id.topic_name);
             nameText.setText(topic.getTopicName());
             ((TextView) convertView.findViewById(R.id.topic_category)).setText(topic.getTopicCategory());
 
@@ -384,13 +383,13 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
                     layout = (LinearLayout) convertView.findViewById(R.id.publisher_linear_layout);
 
                     // the EditText of arguments to public.
-                    final EditText argText = (EditText) convertView.findViewById(R.id.input_arguments_edit_text);
-                    final EditText hzArg = (EditText) convertView.findViewById(R.id.hz_edit_text);
-                    final EditText secArg = (EditText) convertView.findViewById(R.id.millisecond_edit_text);
+                    final EditText argText = convertView.findViewById(R.id.input_arguments_edit_text);
+                    final EditText hzArg = convertView.findViewById(R.id.hz_edit_text);
+                    final EditText secArg = convertView.findViewById(R.id.millisecond_edit_text);
 
-                    final Button sendButton = ((Button) convertView.findViewById(R.id.publish_button));
-                    final Button shutdownButton = (Button) convertView.findViewById(R.id.shutdown_publisher_button);
-                    final TextView statusTextView = (TextView) convertView.findViewById(R.id.send_status_text_view);
+                    final Button sendButton = convertView.findViewById(R.id.publish_button);
+                    final Button shutdownButton = convertView.findViewById(R.id.shutdown_publisher_button);
+                    final TextView statusTextView = convertView.findViewById(R.id.send_status_text_view);
 
                     final PublisherNode publisherNode = PublisherNodeGenerator.newInstance(topic);
                     if (publisherNode == null) {
@@ -564,11 +563,11 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
                     final String START = getResources().getString(R.string.start_button_text);
 
                     final WrapBool focus = new WrapBool();
-                    final TextView textView = (TextView) convertView.findViewById(R.id.subscribe_text);
-                    final Button ssButton = (Button) convertView.findViewById(R.id.start_shutdown_subscriber_button);
+                    final TextView textView = convertView.findViewById(R.id.subscribe_text);
+                    final Button ssButton = convertView.findViewById(R.id.start_shutdown_subscriber_button);
                     final NestedScrollView nestedScrollView
-                            = (NestedScrollView) convertView.findViewById(R.id.nested_scroll_view);
-                    final Button focusButton = (Button) convertView.findViewById(R.id.focus_button);
+                            = convertView.findViewById(R.id.nested_scroll_view);
+                    final Button focusButton = convertView.findViewById(R.id.focus_button);
 
                     final SubscriberNode subscriberNode = SubscriberNodeGenerator.newInstance(topic,
                             new OnReceiveCallback<std_msgs.String>
@@ -691,8 +690,12 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
                             }
                     );
                     break;
+                case TopicData.SRV:
+                    break;
+                case TopicData.CLI:
+                    break;
                 default:
-                    // the category is neither PUB nor SUB.
+                    // the category is not one of PUB, SUB, SRV, and CLI.
                     Log.e(TAG, "A strange node? How could that happen!");
                     break;
             }

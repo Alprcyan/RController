@@ -7,7 +7,7 @@ import android.text.Spanned;
  * This class would make response text of subscriber rich.
  * However it's not completed yet.
  */
-public class SpannableParser {
+class SpannableParser {
     private static final String TAG = SpannableParser.class.getSimpleName();
 
     public static CharSequence parseSpannable(String string) {
@@ -50,12 +50,14 @@ public class SpannableParser {
         return builder;
     }
 
-    private static Object what(String codestr) {
+    private static Object what(String codeStr) {
         Object o = null;
-        // int code = Integer.parseInt(codestr);
-        // switch (code) {
-        //
-        // }
+        StringBuilder builder = new StringBuilder("");
+        int code = Integer.parseInt(codeStr);
+        switch (code) {
+            case 33:
+                break;
+        }
 
         return o;
     }

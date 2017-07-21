@@ -200,7 +200,7 @@ class Validator {
         return builder.toString();
     }
 
-    private String format(String arg) {
+    private String replace(String arg) {
         List<String> list = new LinkedList<>(Arrays.asList(arg.split(" ")));
         Log.i(TAG, "Max length = " + maxLength);
         for (int o = 2; o <= maxLength; ++o) {
@@ -226,7 +226,8 @@ class Validator {
         arg = trim(arg);
         validate(topic, arg);
 
-        arg = format(arg);
+
+        // arg = replace(arg);
         Log.i(TAG, "formatted arg: \"" + arg + "\"");
 
         return arg;

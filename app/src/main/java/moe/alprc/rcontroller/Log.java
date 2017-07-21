@@ -4,7 +4,7 @@ package moe.alprc.rcontroller;
  * replace android.util.Log with moe.alprc.rcontroller.Log.
  */
 public class Log {
-    private static final boolean LOG = true;
+    private static final boolean LOG = false;
 
     public static void i(String tag, String string) {
         if (LOG) {

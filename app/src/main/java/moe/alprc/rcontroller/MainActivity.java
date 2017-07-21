@@ -228,8 +228,14 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * onOPtionsItemSelected(MenuItem) add behaviour to the menu items on the top-right navigation menu.
+     * @param item is the item in the menu.
+     * @return true if operation normally.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        boolean value = false;
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -237,6 +243,7 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
                 } else {
                     drawerLayout.openDrawer(GravityCompat.START);
                 }
+                value = true;
                 break;
             case R.id.navigation_menu_add_topic:
                 // show an alert dialog
@@ -265,6 +272,7 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
                                 dialogInterface.dismiss();
                             }
                         }).show();
+                value = true;
                 break;
             case R.id.navigation_reset_topic_list:
                 AlertDialog.Builder resetTopicListAlertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
@@ -287,9 +295,10 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
                         });
 
                 resetTopicListAlertDialogBuilder.show();
+                value = true;
                 break;
         }
-        return super.onOptionsItemSelected(item);
+        return value;
     }
 
     /**
@@ -378,6 +387,8 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
             View.OnClickListener listItemOnClickListener = null;
             switch (topic.getTopicCategory()) {
                 case TopicData.PUB:
+                    // set the publisher layout (defined in list_view_items.xml) visible on click
+
                     ((TextView) convertView.findViewById(R.id.topic_name)).setText(topic.getTopicName());
                     ((TextView) convertView.findViewById(R.id.topic_category)).setText(topic.getTopicCategory());
                     layout = (LinearLayout) convertView.findViewById(R.id.publisher_linear_layout);
@@ -557,6 +568,8 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
 
                 // Subscribe
                 case TopicData.SUB:
+                    // set the subscriber layout (defined in list_view_items.xml) visible on click
+
                     layout = (FrameLayout) convertView.findViewById(R.id.subscriber_frame_layout);
 
                     final String SHUTDOWN = getResources().getString(R.string.shutdown_button_text);
@@ -662,38 +675,36 @@ public class MainActivity extends AppCompatRosActivity implements NavigationView
                                     if (ssButton.getText().toString().equals(SHUTDOWN)) {
                                         nodeMainExecutor.shutdownNodeMain(subscriberNode);
                                         ssButton.setText(START);
-                                    } else {
+                                    } else if (getMasterUri() != null) {
                                         // start subscribing
-                                        if (getMasterUri() != null) {
+                                        NodeConfiguration nodeConfiguration =
+                                                NodeConfiguration.newPublic(InetAddressFactory
+                                                        .newNonLoopback()
+                                                        .getHostAddress()
+                                                );
+                                        nodeConfiguration.setMasterUri(getMasterUri());
 
-                                            NodeConfiguration nodeConfiguration =
-                                                    NodeConfiguration.newPublic(InetAddressFactory
-                                                            .newNonLoopback()
-                                                            .getHostAddress()
-                                                    );
-                                            nodeConfiguration.setMasterUri(getMasterUri());
+                                        nodeMainExecutor.execute(subscriberNode, nodeConfiguration);
+                                        Log.i(SUB_TAG, "Add subscriber on topic: " + topic.getTopicName());
 
-                                            nodeMainExecutor.execute(subscriberNode, nodeConfiguration);
-                                            Log.i(SUB_TAG, "Add subscriber on topic: " + topic.getTopicName());
-
-                                            ssButton.setText(SHUTDOWN);
-                                        } else {
-                                            Log.e(SUB_TAG, "Attempted to add a subscriber to topic: "
-                                                    + topic.getTopicName() + ". But Master Uri Unset.");
-                                            ssButton.setText(START);
-                                            Toast.makeText(MainActivity.this, "Master Uri Unset", Toast.LENGTH_SHORT)
-                                                    .show();
-                                            startMasterChooser();
-                                        }
+                                        ssButton.setText(SHUTDOWN);
+                                    } else {
+                                        Log.e(SUB_TAG, "Attempted to add a subscriber to topic: "
+                                                + topic.getTopicName() + ". But Master Uri Unset.");
+                                        ssButton.setText(START);
+                                        Toast.makeText(MainActivity.this, "Master Uri Unset", Toast.LENGTH_SHORT)
+                                                .show();
+                                        startMasterChooser();
                                     }
                                 }
+
                             }
                     );
                     break;
                 case TopicData.SRV:
-                    break;
+                    // break;
                 case TopicData.CLI:
-                    break;
+                    // break;
                 default:
                     // the category is not one of PUB, SUB, SRV, and CLI.
                     Log.e(TAG, "A strange node? How could that happen!");

@@ -1,5 +1,7 @@
 package moe.alprc.rcontroller.publisher;
 
+import android.support.annotation.NonNull;
+
 import moe.alprc.rcontroller.Log;
 import moe.alprc.rcontroller.Topic;
 
@@ -8,8 +10,14 @@ public class PublisherNodeGenerator {
 
     private static final String PATH = "moe.alprc.rcontroller.publisher.";
 
+    /**
+     * generate a new instance for the given topic.
+     * @param topic is a instance for moe.alprc.rcontroller.Topic.
+     * @return the PublisherNode, or null if there's no such class.
+     *          Check your spelling and Jvm version.
+     */
     @SuppressWarnings("unchecked")
-    public static PublisherNode newInstance(Topic topic) {
+    public static PublisherNode newInstance(@NonNull Topic topic) {
         String className = PATH + topic.getTopicType() + topic.getTopicCategory();
         Log.i(TAG, "Attempting to construct: " + className);
         try {

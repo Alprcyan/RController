@@ -1,7 +1,5 @@
 package moe.alprc.rcontroller.publisher;
 
-import android.support.annotation.Nullable;
-
 import org.ros.concurrent.CancellableLoop;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -78,6 +76,7 @@ class Geometry_msgsTwistPublisher extends AbstractNodeMain implements PublisherN
             final Publisher<geometry_msgs.Twist> publisher = connectedNode.newPublisher(topicName, geometry_msgs
                     .Twist._TYPE);
 
+            // setLatchMode on or the node will shutdown before the last message published.
             publisher.setLatchMode(true);
 
             if (waitTime == 0) {
